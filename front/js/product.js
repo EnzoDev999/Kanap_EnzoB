@@ -201,7 +201,9 @@ function addOtherProduct() {
         }
         return 0;
     });
-
+    // Maintenant qu'on a utilisé temporaryProduct, on peut le vider
     temporaryProduct = [];
+    // Et enfin, on envoi le pushedProduct au localStorage sous le nom de "storageCart" mais en JSON stringifié(locaStorage ne peut QUE contenir de la datatype stringifié)
     return (localStorage.storageCart = JSON.stringify(pushedProduct));
 }
+
