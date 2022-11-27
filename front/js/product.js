@@ -178,3 +178,30 @@ function addFirstProduct() {
         return (localStorage.storageCart = JSON.stringify(clientProductChoice));
     }
 }
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------
+// fonction addOtherProduct qui va, contrairement à la fonction "addFirstProduct", ajouter un produit dans un panier (tableau) déjà existant et qui fera un tri
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function addOtherProduct() {
+    // Ici on vide / initialise le tableau pushedProduct afin qu'il puisse recevoir de nouvelles données
+    pushedProduct = [];
+    // On push le produit choisit par le client(clientCart) dans temporaryProduct
+    temporaryProduct.push(clientCart);
+    // Ensuite on assemble le panier temporaire(temporaryProduct) avec les produits enregistrés(enregistredProduct) afin que ca forme "pushedProduct"
+    pushedProduct = enregistredProduct.concat(temporaryProduct);
+    // On créer une fonction qui va permettre de trier et de classer les différents articles selon leur ID ensuite leurs couleurs (source : https://dev.to/felix/understanding-sort-b2f#:~:text=Just%20like%20with%20numbers%2C%20if,change%20on%20every%20function%20call.)
+    pushedProduct.sort(function sorting(a,b) {
+        if (a._id < b._id) return -1;
+        if (a._id > b._id) return 1;
+        if (a._id = b._id){
+            if (a.couleur < b.couleur) return -1;
+            if (a.couleur > b.couleur) return 1;
+        }
+        return 0;
+    });
+
+    temporaryProduct = [];
+    return (localStorage.storageCart = JSON.stringify(pushedProduct));
+}
