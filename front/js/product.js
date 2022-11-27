@@ -139,23 +139,42 @@ productChoice.addEventListener("click", () => {
         alert("Afin que votre choix soit validé, veillez à bien sélectionner une couleur et/ou choisir une quantité entre 1 et 100")
         // Si Les conditions prédéfinies avant sont respectées, alors :
     } else {
-        // on appel la fonction addToCart
-        addToCart(id, colorChoice.value, quantityChoice.value);
+        // on appel la fonction Cart
+        Cart();
         // On ajoute un style au bouton au clic de celui-ci
         document.querySelector("#addToCart").style.color = "rgb(0, 205, 0)";
         document.querySelector("#addToCart").textContent = "Produit ajouté !";
     }
 });
 
-let panier = [];
+//------------------------------------------------------------------------
+// Définitions des différents tableaux pour le panier
+//------------------------------------------------------------------------
 
-function addToCart(id, color, quantity){
-    panier.push({id:id, color:color, quantity:quantity});
-    console.log(panier);
-    if (localStorage.cart){
-        console.log("exist")
-    } else {
-        localStorage.cart = panier
-        console.log("exist pas")
+// Tableau unique qui servira à initialiser le panier (qui ne possédait rien avant)
+let clientProductChoice = [];
+// Tableau qui servira d'intermédiaire entre le moment où le client choisit son article et le moment où on l'envoi au localStorage (qui sera sous le nom de storageCart)
+let temporaryProduct = [];
+// Tableau qui va permettre de récupérer les données du localStorage qui sera appelé "storageCart"(Tableau qu'on utilisera principalement dans la fonction panier())
+let enregistredProduct = [];
+// Tableau qui va servir à la concaténation de "temporaryProduct" + "enregistredProduct"(On va les mettre de bout en bout, les rassembler)
+let pushedProduct = [];
+
+
+//------------------------------------------------------------------------------------------------------------
+// fonction addFirstProduct qui va permettre l'initialisation d'un panier(tableau) dans le cas où il est vide
+//------------------------------------------------------------------------------------------------------------
+
+function addFirstProduct() {
+    // On regard au niveau de la console si un produit est bien enregistré ou non
+    console.log(enregistredProduct);
+    // Ici on veut savoir SI "enregistredProduct" est null (donc qu'il n'existe pas)
+    if (enregistredProduct === null){
+        // On va push le produit qui aura été choisit dans "clientProductChoice"
+        clientProductChoice.push(clientCart);
+        console.log(clientCart);
+        /* On envoie "clientProductChoice" dans le localStorage sous le nom de "storageCart"(local Storage ne supporte que de la datatype de type "string"
+        c'est pourquoi on "storageCart" sera en JSON(datatype) stringifié*/
+        return (localStorage.storageCart = JSON.stringify(clientProductChoice));
     }
 }
