@@ -196,8 +196,8 @@ function addOtherProduct() {
         if (a._id < b._id) return -1;
         if (a._id > b._id) return 1;
         if (a._id = b._id){
-            if (a.couleur < b.couleur) return -1;
-            if (a.couleur > b.couleur) return 1;
+            if (a.color < b.color) return -1;
+            if (a.color > b.color) return 1;
         }
         return 0;
     });
@@ -207,3 +207,32 @@ function addOtherProduct() {
     return (localStorage.storageCart = JSON.stringify(pushedProduct));
 }
 
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Nous allons créer une fonction appelée "Cart" qui va permettre d'ajuster si un produit est déjà dans le tableau final, sinon il le rajoute ou bien initialise le tableau avec le produit en question
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function Cart() {
+    // Ici on va récupérer la valeur storageCart(dans le localStorage), grâce à getItem, qui est sous forme JSON stringifié afin qu'il redevienne un objet (grâce à .parse)
+    enregistredProduct = JSON.parse(localStorage.getItem("storageCart"));
+    // Création d'une condition de SI enregistredProduct existe(donc SI il y a déjà des articles qui ont été choisis et enregistré par le client)
+    if (enregistredProduct){
+        for (let choice of enregistredProduct){
+            // Ici on cherche à comparé entre le nouveau produit enregistré avec le/les anciens produits déjà ajoutés
+            if (choice._id === id && choice.color === clientCart.color) {
+                // En cas de séléction d'un article ayant déjà été préalablement ajouté, une alerte va apparaître pour prévenir le client
+                alert("Nous vous rappelons que l'article choisit avait déjà été ajouté au panier.");
+                // On va ensuite transformer les strings concernant la nouvelle quantité du produit sélectionné ainsi que la quantité du produit déjà présent dans le panier en nombre(grâce à parseInt) afin de les additioner pour former quantityAddition qui va avoir comme valeur la quantité global de l'article en question
+                let quantityAddition = parseInt(choice.quantity) + parseInt(productQuantity);
+                // Nous retransformons de nouveau la nouvelle quantité de l'article en JSON stringifié (afin qu'il puisse être ajouté au localStorage)
+                choice.quantity = JSON.stringify(quantityAddition);
+                // Enfin nous retournons un nouveau panier "enregistredProduct" dans le localStorage
+                return (localStorage.storageCart = JSON.stringify(enregistredProduct));
+            }
+        }
+        // Si le nouvel article ne correspond à aucun des articles déjà présent dans le panier, alors la fonction AddOtherProduct sera appelé
+        return addOtherProduct();
+    }
+    // Et enfin, si aucun article n'a été au préalable sélectionné ni ajouté, alors ca en initialisera un grâce à la fonction addFirstProduct
+    return addFirstProduct();
+}
