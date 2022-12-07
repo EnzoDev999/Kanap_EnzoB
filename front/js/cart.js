@@ -170,3 +170,27 @@ function deleteProduct() {
     });
   });
 }
+
+
+//---------------------------------------------------------------------------
+// fonction pour afficher le nombre total de produit ainsi que le prix total
+//---------------------------------------------------------------------------
+
+function totalProduct() {
+  // déclaration de variables qui seront un nombre (une poiur le nombre de produit et l'autre pour le prix total)
+  let totalArticle = 0;
+  let totalPrice = 0;
+  // On cible un élément en particulier
+  const cart = document.querySelectorAll(".cart__item");
+  // On veut désigner pour chaque élément de cart
+  cart.forEach((cart) => {
+    // On récupère les quantitées des produits grâve à la dataset pour ensuite redéfinir la valeur de totalArticle
+    totalArticle += JSON.parse(cart.dataset.quantity)
+    // Pour le coût total il faut créer une multiplication (un opérateur) via les datasets
+    totalPrice += cart.dataset.quantity * cart.dataset.price;
+  });
+  // Je vais donc cibler l'endroit où on veut afficher le nombre d'article
+  document.getElementById("totalQuantity").textContent = totalArticle;
+  // Je vais donc cibler l'endroit où on veut afficher le prix total
+  document.getElementById("totalPrice").textContent = totalPrice;
+}
