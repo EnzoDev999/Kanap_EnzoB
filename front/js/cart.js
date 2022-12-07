@@ -195,3 +195,49 @@ function totalProduct() {
   // Je vais donc cibler l'endroit où on veut afficher le prix total
   document.getElementById("totalPrice").textContent = totalPrice;
 }
+
+
+//--------------------------------------------------------------
+// Section formulaire
+//--------------------------------------------------------------
+
+// Les données du client seront stockées dans ce tableau pour la commande qui sera dans la page panier
+if (page.match("cart")) {
+  var contactClient = {};
+  localStorage.contactClient = JSON.stringify(contactClient);
+    // On cible des éléments inputs, on veut leur attribuer une nouvelle classe, ainsi ils agiront tous de la même manière quand on fera appel au regex sur cette classe
+    // Ici on cible les élements inputs "firstName", "lastName" et "city"
+    var firstName = document.querySelector("FirstName");
+    firstName.classList.add("regex_text");
+    var lastName = document.querySelector("#lastName");
+    lastName.classList.add("regex_texte");
+    var city = document.querySelector("#city");
+    city.classList.add("regex_texte");
+    // on pointe l'input address
+    var address = document.querySelector("#address");
+    address.classList.add("regex_adresse");
+    // on pointe l'input email
+    var email = document.querySelector("#email");
+    email.classList.add("regex_email");
+    // on pointe les élément qui ont la classe .regex_texte
+    var regexTexte = document.querySelectorAll(".regex_texte");
+    // modification du type de l'input type email à text à cause d'un comportement de l'espace blanc non voulu vis à vis de la regex 
+    document.querySelector("#email").setAttribute("type", "text");
+}
+
+
+//--------------------------------------------------------------
+//regex 
+//--------------------------------------------------------------
+
+// /^ début regex qui valide les caratères a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ aussi les espaces blancs et tiret \s- comprit entre 1 et 31 caratères (nombre de caractère maximum sur carte identité) {1,31} et on termine la regex $/i en indiquant que les éléments selectionnés ne sont pas sensible à la casse
+let regexLettre = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
+// /^ début regex qui valide les caratères chiffre lettre et caratères spéciaux a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ aussi les espaces blancs et tiret \s- comprit entre 1 et 60 caratères (nombre de caractère maximum sur carte identité) {1,60} et on termine la regex $/i en indiquant que les éléments selectionnés ne sont pas sensible à la casse
+let regexChiffreLettre = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,60}$/i;
+let regValideEmail = /^[a-z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]{1,60}$/i;
+let regMatchEmail = /^[a-zA-Z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]+@([\w-]+\.)+[\w-]{2,4}$/i;
+
+//----------------------------------------------------------------------------------------------
+// Ecoute et attribution de point(pour sécurité du clic) si ces champs sont ok d'après la regex
+//----------------------------------------------------------------------------------------------
+
