@@ -51,7 +51,7 @@ function displayCart(products) {
      // On appel la fonction display() qui va utiliser les données de cart(définies juste au dessus)
     display(cart);
     } else {
-        // Si le panier se retrouve vide, on créer un h1 qui va servire d'inforamation
+        // Si le panier se retrouve vide, on créer un h1 qui va servire d'information
         document.querySelector("#totalQuantity").innerHTML = "0";
         document.querySelector("#totalPrice").innerHTML = "0";
         document.querySelector("h1").innerHTML = 
@@ -96,5 +96,77 @@ function display(indexé) {
     ).join(""); //on remplace les virgules de jonctions des objets du tableau par un vide
 
   // reste à l'écoute grâce à la fonction suivante pour modifier l'affichage au besoin
-  //totalProduct();
+  totalProduct();
+}
+
+
+//--------------------------------------------------------------------------
+// fonction changeQuantity on modifie dynamiquement les quantités du panier
+//--------------------------------------------------------------------------
+
+function changeQuantity() {
+  const cart = document.querySelectorAll(".cart__item");
+  // Nous allons maintenant écouter ce qu'il se passe dans itemQuantity d'un article précis
+  cart.forEach((cart) => {
+    cart.addEventListener("change", (eq) => {
+      // On vérifie la nouvelle valeur(et sa validation) après le clique ainsi que son positionnement dans les articles
+      let panier = JSON.parse(localStorage.getItem("storageCart"));
+      // On créer ensuite une boucle afin d'appliquer la nouvelle quantité du produit au panier grâce à sa nouvele valeur validé auparavant
+      for (article of panier)
+      if (
+        article._id === cart.dataset.id &&
+        cart.dataset.color === article.color
+      ) {
+        article.quantity = eq.target.value;
+        localStorage.storageCart = JSON.stringify(panier);
+        // On appliqué ensuite le changement de quantité à la dataset qui s'en charge
+        cart.dataset.quantity = eq.target.value;
+        // Et enfin on joue la fonction afin d'actualiser les données
+        totalProduct();
+      }
+    });
+  });
+}
+
+
+//-------------------------------------------------------------------------------------------
+// fonction supression on supprime un article dynamiquement du panier et donc de l'affichage
+//-------------------------------------------------------------------------------------------
+
+function deleteProduct() {
+  // On déclare la variable (ici on va viser le "supprimer" dans <article> cart__item > <p> deleteItem)
+  const cartdelete = document.querySelectorAll(".cart__item .deleteItem");
+  // On vise CHAQUE élément de cartdelete
+  cartdelete.forEach((cartdelete) => {
+    // Maintenant on écoute si un clic se fait sur la zone visé auparavant d'un articlé concerné
+    cartdelete.addEventListener("click", () => {
+      // appel de la ressource du localStorage
+      let panier = JSON.parse(localStorage.getItem("storageCart"));
+      for (let d = 0, c = panier.length; d < c; d++)
+        if (
+          panier[d]._id === cartdelete.dataset.id &&
+          panier[d].color === cartdelete.dataset.color
+        ) {
+          // on déclare une variable qui sera utile à la supréssion
+          const num = [d];
+          // on va ensuite créer un tableau miroir en ne contenant pas l'articlé supprimé auparavant
+          let newCart = JSON.parse(localStorage.getItem("storageCart"));
+          // On supprime donc 1 élement à l'indice "num" (.splice() permet cette modification de contenu directement sur le tableau)
+          newCart.splice(num, 1);
+          // SI le nouveau panier créer devient vide après suppréssion d'article(s)(donc un panier vide)
+          if (newCart == newCart.length == 0) {
+          // Si le panier se retrouve vide, on créer un h1 qui va servire d'information
+          document.querySelector("#totalQuantity").innerHTML = "0";
+          document.querySelector("#totalPrice").innerHTML = "0";
+          document.querySelector("h1").innerHTML = 
+          "Vous n'avez pas d'article dans votre panier.";
+          }
+          // On renvoit le nouveau panier (newcart()) converti dans le localStorage pour ensuite jouer la fonction
+          localStorage.storageCart = JSON.stringify(newCart);
+          totalProduct();
+          // Et enfin on refresh la page afin que la page se charge sans le produit supprimé
+          return location.reload();
+        }
+    });
+  });
 }
