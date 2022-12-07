@@ -38,15 +38,16 @@ function displayCart(products) {
      // zone de correspondance clef/valeur de l'api et du panier grâce à l'id produit choisit dans le localStorage
      for (let choice of cart) {
         console.log(choice);
-        products.forEach(element => {
-            if (choice._id === element._id) {
-                    choice.name = element.name;
-                    choice.price = element.price;
-                    choice.image = element.imageUrl;
-                    choice.description = element.description;
-                    choice.alt = element.altTxt;
-            }
-        });
+        for (let g = 0, h = products.length; g < h; g++) {
+          if (choice._id === products[g]._id) {
+            // on créer ainsi qu'ajouter à chaque clé les valeurs à panier qui vont servir aux valeurs dataset
+            choice.name = products[g].name;
+            choice.price = products[g].price;
+            choice.image = products[g].imageUrl;
+            choice.description = products[g].description;
+            choice.alt = products[g].altTxt;
+          }
+        }
      }
      // On appel la fonction display() qui va utiliser les données de cart(définies juste au dessus)
     display(cart);
@@ -58,8 +59,8 @@ function displayCart(products) {
         "Vous n'avez pas d'article dans votre panier.";
     }
     // reste à l'écoute grâce aux fonctions suivantes pour modifier l'affichage au besoin
-    //changeQuantity();
-    //deleteProduct();
+    changeQuantity();
+    deleteProduct();
 }
 
 //--------------------------------------------------------------
@@ -126,6 +127,7 @@ function changeQuantity() {
       }
     });
   });
+  console.log(cart);
 }
 
 

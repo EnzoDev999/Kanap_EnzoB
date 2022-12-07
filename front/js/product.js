@@ -96,12 +96,12 @@ colorChoice.addEventListener("input", (ce) => {
 
 // définition des variables
 let quantityChoice = document.querySelector("#quantity")
+// On défini une variable qui va servir à récuperer la nouvelle valeur après le déclenchement de l'event
+let productQuantity;
 /* addEventListener va permettre d'écouter ce qui ce passe au niveau de #quantity,
 quand la valeur de l'élément <input> se voit être modifié, cet élément va continuellement déclencher l'"input" event*/
 quantityChoice.addEventListener("input", (qe) => {
-    // On défini une variable qui va servir à récuperer la nouvelle valeur après le déclenchement de l'event
-    let productQuantity;
-    // Ici on procède à la récupération de la valeur ciblé de "qe"
+    // Ici on procède à la récupération de la valeur ciblé de "qe" qui va être la nouvelle valeur de productQuantity
     productQuantity = qe.target.value;
     // On ajoute la quantité(nouvelle valeur) sélectionné au panier du client
     clientCart.quantity = productQuantity;
@@ -220,8 +220,6 @@ function Cart() {
         for (let choice of enregistredProduct){
             // Ici on cherche à comparé entre le nouveau produit enregistré avec le/les anciens produits déjà ajoutés
             if (choice._id === id && choice.color === clientCart.color) {
-                // En cas de séléction d'un article ayant déjà été préalablement ajouté, une alerte va apparaître pour prévenir le client
-                alert("Nous vous rappelons que l'article choisit avait déjà été ajouté au panier.");
                 // On va ensuite transformer les strings concernant la nouvelle quantité du produit sélectionné ainsi que la quantité du produit déjà présent dans le panier en nombre(grâce à parseInt) afin de les additioner pour former quantityAddition qui va avoir comme valeur la quantité global de l'article en question
                 let quantityAddition = parseInt(choice.quantity) + parseInt(productQuantity);
                 // Nous retransformons de nouveau la nouvelle quantité de l'article en JSON stringifié (afin qu'il puisse être ajouté au localStorage)
