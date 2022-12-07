@@ -207,20 +207,20 @@ if (page.match("cart")) {
   localStorage.contactClient = JSON.stringify(contactClient);
     // On cible des éléments inputs, on veut leur attribuer une nouvelle classe, ainsi ils agiront tous de la même manière quand on fera appel au regex sur cette classe
     // Ici on cible les élements inputs "firstName", "lastName" et "city"
-    var firstName = document.querySelector("FirstName");
+    var firstName = document.querySelector("#firstName");
     firstName.classList.add("regex_text");
     var lastName = document.querySelector("#lastName");
-    lastName.classList.add("regex_texte");
+    lastName.classList.add("regex_text");
     var city = document.querySelector("#city");
-    city.classList.add("regex_texte");
+    city.classList.add("regex_text");
     // on pointe l'input address
     var address = document.querySelector("#address");
-    address.classList.add("regex_adresse");
+    address.classList.add("regex_address");
     // on pointe l'input email
     var email = document.querySelector("#email");
     email.classList.add("regex_email");
-    // on pointe les élément qui ont la classe .regex_texte
-    var regexTexte = document.querySelectorAll(".regex_texte");
+    // on pointe les éléments qui ont la classe .regex_text
+    var regexText = document.querySelectorAll(".regex_text");
     // modification du type de l'input type email à text à cause d'un comportement de l'espace blanc non voulu vis à vis de la regex 
     document.querySelector("#email").setAttribute("type", "text");
 }
@@ -231,13 +231,324 @@ if (page.match("cart")) {
 //--------------------------------------------------------------
 
 // /^ début regex qui valide les caratères a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ aussi les espaces blancs et tiret \s- comprit entre 1 et 31 caratères (nombre de caractère maximum sur carte identité) {1,31} et on termine la regex $/i en indiquant que les éléments selectionnés ne sont pas sensible à la casse
-let regexLettre = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
+let regexLetter = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,31}$/i;
 // /^ début regex qui valide les caratères chiffre lettre et caratères spéciaux a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ aussi les espaces blancs et tiret \s- comprit entre 1 et 60 caratères (nombre de caractère maximum sur carte identité) {1,60} et on termine la regex $/i en indiquant que les éléments selectionnés ne sont pas sensible à la casse
-let regexChiffreLettre = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,60}$/i;
-let regValideEmail = /^[a-z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]{1,60}$/i;
+let regexNumberLetter = /^[a-z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{1,60}$/i;
+let regCheckedEmail = /^[a-z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]{1,60}$/i;
 let regMatchEmail = /^[a-zA-Z0-9æœ.!#$%&’*+/=?^_`{|}~"(),:;<>@[\]-]+@([\w-]+\.)+[\w-]{2,4}$/i;
+
+
+//----------------------------------------------------------------------------------------------
+// Ecoute et attribution de point(pour sécurité du clic) si ces champs sont ok d'après la regex
+//----------------------------------------------------------------------------------------------
+// Si on est bien sur la page cart
+if (page.match("cart")) {
+  // POUR chaque élément de regexText
+  regexText.forEach((regexText) =>
+    // On écoute ce qu'il se passe à chaque input de regexText (ceux qu'on a défini plus tôt)
+    regexText.addEventListener("input", (e) => {
+      // value sera la valeur de l'input en dynamique
+      value = e.target.value;
+      // regNormal sera la valeur de la réponse regex, 0 ou -1
+      let regNormal = value.search(regexLetter);
+      // SI regNormal est égal à 0
+      if (regNormal === 0) {
+        contactClient.firstName = firstName.value;
+        contactClient.lastName = lastName.value;
+        contactClient.city = city.value;
+      }
+      // SI la ville / prénom / nom ne soit pas vide et que regNormal est égal à 0
+      if (
+        contactClient.city !== "" &&
+        contactClient.lastName !== "" &&
+        contactClient.firstName !== "" &&
+        regNormal === 0
+      ) {
+        contactClient.regexNormal = 3;
+      } else {
+        contactClient.regexNormal = 0;
+      }
+      localStorage.contactClient = JSON.stringify(contactClient);
+      colorRegex(regNormal, value, regexText);
+      checkedClick();
+    })
+  );
+}
+
+
+//--------------------------------------------------------------------------------------------
+// le champ écouté via la regex regexLettre fera réagir, grâce à texteInfo, la zone concernée
+//--------------------------------------------------------------------------------------------
+texteInfo(regexLetter, "#firstNameErrorMsg", firstName);
+texteInfo(regexLetter, "#lastNameErrorMsg", lastName);
+texteInfo(regexLetter, "#cityErrorMsg", city);
+
 
 //----------------------------------------------------------------------------------------------
 // Ecoute et attribution de point(pour sécurité du clic) si ces champs sont ok d'après la regex
 //----------------------------------------------------------------------------------------------
 
+if (page.match("cart")) {
+  let regexAddress = document.querySelector(".regex_address");
+  regexAddress.addEventListener("input", (e) => {
+    // value sera la valeur de l'input en dynamique
+    value = e.target.value;
+    // regNormal sera la valeur de la réponse regex, 0 ou -1
+    let regAddress = value.search(regexNumberLetter);
+    if (regAddress === 0) {
+      contactClient.address = address.value;
+    }
+    if (contactClient.address !== "" && regAddress === 0) {
+      contactClient.regexAddress = 1;
+    } else {
+      contactClient.regexAddress = 0;
+    }
+    localStorage.contactClient = JSON.stringify(contactClient);
+    colorRegex(regAddress, value, regexAddress);
+    checkedClick();
+  });
+}
+
+
+//--------------------------------------------------------------------------------------------------
+// le champ écouté via la regex regexNumberLetter fera réagir, grâce à texteInfo, la zone concernée
+//--------------------------------------------------------------------------------------------------
+texteInfo(regexNumberLetter, "#addressErrorMsg", address);
+
+
+//--------------------------------------------------------------------------------------------
+// Ecoute et attribution de point(pour sécurité du clic) si ce champ est ok d'après les regex
+//--------------------------------------------------------------------------------------------
+if (page.match("cart")) {
+  let regexEmail = document.querySelector(".regex_email");
+  regexEmail.addEventListener("input", (e) => {
+    // value sera la valeur de l'input en dynamique
+    value = e.target.value;
+    // https://webdevdesigner.com/q/what-characters-are-allowed-in-an-email-address-65767/ mon adresse doit avoir cette forme pour que je puisse la valider
+    let regMatch = value.match(regMatchEmail);
+    // quand le resultat sera correct, le console log affichera une autre réponse que null; regChecked sera la valeur de la réponse regex, 0 ou -1
+    let regChecked = value.search(regCheckedEmail);
+    if (regChecked === 0 && regMatch !== null) {
+      contactClient.email = email.value;
+      contactClient.regexEmail = 1;
+    } else {
+      contactClient.regexEmail = 0;
+    }
+    localStorage.contactClient = JSON.stringify(contactClient);
+    colorRegex(regChecked, value, regexEmail);
+    checkedClick();
+  });
+}
+
+
+//------------------------------------
+// texte sous champ email
+//------------------------------------
+if (page.match("cart")) {
+  email.addEventListener("input", (e) => {
+    // value sera la valeur de l'input en dynamique
+    value = e.target.value;
+    let regMatch = value.match(regMatchEmail);
+    let regChecked = value.search(regCheckedEmail);
+    // si value est toujours un string vide et la regex différente de 0 (regex à -1 et le champ est vide mais pas d'erreur)
+    if (value === "" && regMatch === null) {
+      document.querySelector("#emailErrorMsg").textContent = "Veuillez renseigner votre email.";
+      document.querySelector("#emailErrorMsg").style.color = "white";
+      // si value n'est plus un string vide et la regex différente de 0 (regex à -1 et le champ n'est pas vide donc il y a une erreur)
+    } else if (regChecked !== 0) {
+      document.querySelector("#emailErrorMsg").innerHTML = "Caractère non valide";
+      document.querySelector("#emailErrorMsg").style.color = "white";
+      // pour le reste des cas (quand la regex ne décèle aucune erreur et est à 0 peu importe le champ vu qu'il est validé par la regex)
+    } else if (value != "" && regMatch == null) {
+      document.querySelector("#emailErrorMsg").innerHTML = "Caratères acceptés pour ce champ. Forme email pas encore conforme";
+      document.querySelector("#emailErrorMsg").style.color = "white";
+    } else {
+      document.querySelector("#emailErrorMsg").innerHTML = "Forme email conforme.";
+      document.querySelector("#emailErrorMsg").style.color = "white";
+    }
+  });
+}
+
+
+//---------------------------------------------------------------------------------------------------------------
+// fonction colorRegex qui modifira la couleur de l'input par remplissage tapé, aide visuelle et accessibilité
+//---------------------------------------------------------------------------------------------------------------
+
+// on détermine une valeur de départ à value qui sera un string
+let valueListen = "";
+// fonction à 3 arguments réutilisable, la regex, la valeur d'écoute, et la réponse à l'écoute
+function colorRegex(regSearch, valueListen, inputAction) {
+  // si value est toujours un string vide et la regex différente de 0 (regex à -1 et le champ est vide mais pas d'erreur)
+  if (valueListen === "" && regSearch != 0) {
+    inputAction.style.backgroundColor = "white";
+    inputAction.style.color = "black";
+    // si value n'est plus un string vide et la regex différente de 0 (regex à -1 et le champ n'est pas vide donc il y a une erreur)
+  } else if (valueListen !== "" && regSearch != 0) {
+    inputAction.style.backgroundColor = "rgb(220, 50, 50)";
+    inputAction.style.color = "white";
+    // pour le reste des cas (quand la regex ne décèle aucune erreur et est à 0 peu importe le champ vu qu'il est validé par la regex)
+  } else {
+    inputAction.style.backgroundColor = "rgb(0, 138, 0)";
+    inputAction.style.color = "white";
+  }
+}
+
+
+//------------------------------------------------------------------------------------
+// fonction d'affichage individuel des paragraphes sous input sauf pour l'input email
+//------------------------------------------------------------------------------------
+function texteInfo(regex, target, zoneListen) {
+  if (page.match("cart")) {
+    zoneListen.addEventListener("input", (e) => {
+    // value sera la valeur de l'input en dynamique
+    value = e.target.value;
+    index = value.search(regex);
+    // si value est toujours un string vide et la regex différente de 0 (regex à -1 et le champ est vide mais pas d'erreur)
+    if (value === "" && index != 0) {
+      document.querySelector(target).textContent = "Veuillez renseigner ce champ.";
+      document.querySelector(target).style.color = "white";
+      // si value n'est plus un string vide et la regex différente de 0 (regex à -1 et le champ n'est pas vide donc il y a une erreur)
+      } else if (value !== "" && index != 0) {
+      document.querySelector(target).innerHTML = "Reformulez cette donnée";
+      document.querySelector(target).style.color = "white";
+      // pour le reste des cas (quand la regex ne décèle aucune erreur et est à 0 peu importe le champ vu qu'il est validé par la regex)
+      } else {
+      document.querySelector(target).innerHTML = "Caratères acceptés pour ce champ.";
+      document.querySelector(target).style.color = "white";
+      }
+    });
+  }
+}
+
+
+//----------------------------------------------------------------
+// Fonction de validation/d'accés au clic du bouton du formulaire
+//----------------------------------------------------------------
+let order = document.querySelector("#order");
+// la fonction sert à valider le clic de commande de manière interactive
+function checkedClick() {
+  let contactRef = JSON.parse(localStorage.getItem("contactClient"));
+  let somme = contactRef.regexNormal + contactRef.regexAddress + contactRef.regexEmail;
+  // regexNormal = 3(nom/prénom/ville) , regexAddress = 1 , regexEmail = 1
+  if (somme === 5) {
+    order.removeAttribute("disabled", "disabled");
+    document.querySelector("#order").setAttribute("value", "Commander !");
+  } else {
+    order.setAttribute("disabled", "disabled");
+    document.querySelector("#order").setAttribute("value", "Remplir le formulaire");
+  }
+}
+
+
+//----------------------------------------------------------------
+// Envoi de la commande
+//----------------------------------------------------------------
+if (page.match("cart")) {
+  order.addEventListener("click", (e) => {
+    // empeche de recharger la page, on prévient le reload du bouton
+    e.preventDefault();
+    checkedClick();
+    sendPacket();
+  });
+}
+
+
+//----------------------------------------------------------------
+// fonction récupérations des id puis mis dans un tableau
+//----------------------------------------------------------------
+
+// définition du panier qui ne comportera que les id des produits choisi du local storage
+let cartId = [];
+function arrayId() {
+// appel des ressources
+let cart = JSON.parse(localStorage.getItem("storageCart"));
+// récupération des id produit dans panierId
+if (cart && cart.length > 0) {
+  for (let indice of cart) {
+    cartId.push(indice._id);
+    console.log(indice._id);
+  }
+} else {
+  console.log("le panier est vide");
+  document.querySelector("#order").setAttribute("value", "Panier vide!");
+}
+}
+
+
+//------------------------------------------------------------------------
+// fonction récupération des donnée client et panier avant transformation
+//------------------------------------------------------------------------
+
+let contactRef;
+let finalOrder;
+function packet() {
+  contactRef = JSON.parse(localStorage.getItem("contactClient"));
+  // définition de l'objet commande
+  finalOrder = {
+    contact: {
+      firstName: contactRef.firstName,
+      lastName: contactRef.lastName,
+      address: contactRef.address,
+      city: contactRef.city,
+      email: contactRef.email,
+    },
+    products: cartId,
+  };
+}
+
+//----------------------------------------------------------------
+// fonction sur la validation de l'envoi
+//----------------------------------------------------------------
+function sendPacket() {
+  arrayId();
+  packet();
+  // vision sur le packet que l'on veut envoyer
+  console.log(finalOrder);
+  let somme = contactRef.regexNormal + contactRef.regexAddress + contactRef.regexEmail;
+  // si le cartId contient des articles et que le clic est autorisé
+  if (cartId.length != 0 && somme === 5) {
+    // envoi à la ressource api
+    fetch("http://localhost:3000/api/products/order", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(finalOrder),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // Après validation, on r'envoi à la page confirmation
+        window.location.href = `/front/html/confirmation.html?commande=${data.orderId}`;
+        // On vide les différents storages
+        sessionStorage.clear();
+        localStorage.clear();
+      })
+      .catch(function (err) {
+        console.log(err);
+        alert("erreur");
+      });
+  }
+}
+
+
+//--------------------------------------------------------------------------------------------------------------------
+// fonction affichage autoinvoquée du numéro de commande et vide du storage lorsque l'on est sur la page confirmation
+//--------------------------------------------------------------------------------------------------------------------
+
+//(fonction)() permet de créer une fonction et de l'appeler immédiatement après sa création (on sait que cette fonction ne sera pas appelé plus tard)
+/*(function order() {
+  if (page.match("confirmation")) {
+    sessionStorage.clear();
+    localStorage.clear();
+    // valeur du numero de commande
+    let numOrder = new URLSearchParams(document.location.search).get("commande");
+    // merci et mise en page
+    document.querySelector("#orderId").innerHTML = `<br>${numOrder}<br>Merci pour votre achat`;
+    console.log("valeur de l'orderId venant de l'url: " + numOrder);
+    //réinitialisation du numero de commande
+    numOrder = undefined;
+  } else {
+    console.log("sur page cart");
+  }
+})();*/
