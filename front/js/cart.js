@@ -116,7 +116,7 @@ function changeQuantity() {
       for (article of panier)
       if (
         article._id === cart.dataset.id &&
-        cart.dataset.color === article.color
+        cart.dataset.colors === article.colors
       ) {
         article.quantity = eq.target.value;
         localStorage.storageCart = JSON.stringify(panier);
@@ -127,7 +127,6 @@ function changeQuantity() {
       }
     });
   });
-  console.log(cart);
 }
 
 
@@ -143,20 +142,20 @@ function deleteProduct() {
     // Maintenant on écoute si un clic se fait sur la zone visé auparavant d'un articlé concerné
     cartdelete.addEventListener("click", () => {
       // appel de la ressource du localStorage
-      let panier = JSON.parse(localStorage.getItem("storageCart"));
-      for (let d = 0, c = panier.length; d < c; d++)
+      let cart = JSON.parse(localStorage.getItem("storageCart"));
+      for (let d = 0, c = cart.length; d < c; d++)
         if (
-          panier[d]._id === cartdelete.dataset.id &&
-          panier[d].color === cartdelete.dataset.color
+          cart[d]._id === cartdelete.dataset.id &&
+          cart[d].colors === cartdelete.dataset.colors
         ) {
           // on déclare une variable qui sera utile à la supréssion
           const num = [d];
-          // on va ensuite créer un tableau miroir en ne contenant pas l'articlé supprimé auparavant
+          // on va ensuite créer un tableau miroir en ne contenant pas l'article supprimé auparavant
           let newCart = JSON.parse(localStorage.getItem("storageCart"));
           // On supprime donc 1 élement à l'indice "num" (.splice() permet cette modification de contenu directement sur le tableau)
           newCart.splice(num, 1);
           // SI le nouveau panier créer devient vide après suppréssion d'article(s)(donc un panier vide)
-          if (newCart == newCart.length == 0) {
+          if (newCart && newCart.length == 0) {
           // Si le panier se retrouve vide, on créer un h1 qui va servire d'information
           document.querySelector("#totalQuantity").innerHTML = "0";
           document.querySelector("#totalPrice").innerHTML = "0";
