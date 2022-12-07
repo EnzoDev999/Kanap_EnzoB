@@ -58,8 +58,8 @@ function displayCart(products) {
         "Vous n'avez pas d'article dans votre panier.";
     }
     // reste à l'écoute grâce aux fonctions suivantes pour modifier l'affichage au besoin
-    changeQuantity();
-    deleteProduct();
+    //changeQuantity();
+    //deleteProduct();
 }
 
 //--------------------------------------------------------------
@@ -69,10 +69,10 @@ function displayCart(products) {
 // on créer la fonction display() avec un params qui va permettre l'appel de données à appliqué à cette fonction (donc utilisera les données de "cart")
 function display(indexé) {
     // on déclare et on pointe la zone d'affichage
-    let zoneCart = document.querySelector("#cart_items");
+    let zoneCart = document.querySelector("#cart__items");
     // on créer l'affichage des produits du panier via un map et on introduit les dataset(défini plus tôt) dans le code
     zoneCart.innerHTML += indexé.map((choice) => 
-    `<article class="cart__item" data-id="${choice._id}" data-quantity="${choix.color}" data-quantity="${choice.quantity}" data-price="${choice.price}"> 
+    `<article class="cart__item" data-id="${choice._id}" data-color="${choice.color}" data-quantity="${choice.quantity}" data-price="${choice.price}"> 
     <div class="cart__item__img">
       <img src="${choice.image}" alt="${choice.alt}">
     </div>
@@ -80,7 +80,7 @@ function display(indexé) {
       <div class="cart__item__content__titlePrice">
         <h2>${choice.name}</h2>
         <span>couleur : ${choice.color}</span>
-        <p data-prix="${choice.price}">${choice.price} €</p>
+        <p data-price="${choice.price}">${choice.price} €</p>
       </div>
       <div class="cart__item__content__settings">
         <div class="cart__item__content__settings__quantity">
@@ -93,5 +93,8 @@ function display(indexé) {
       </div>
     </div>
   </article>`
-    ) 
+    ).join(""); //on remplace les virgules de jonctions des objets du tableau par un vide
+
+  // reste à l'écoute grâce à la fonction suivante pour modifier l'affichage au besoin
+  //totalProduct();
 }
