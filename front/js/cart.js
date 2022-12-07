@@ -530,25 +530,3 @@ function sendPacket() {
       });
   }
 }
-
-
-//--------------------------------------------------------------------------------------------------------------------
-// fonction affichage autoinvoquée du numéro de commande et vide du storage lorsque l'on est sur la page confirmation
-//--------------------------------------------------------------------------------------------------------------------
-
-//(fonction)() permet de créer une fonction et de l'appeler immédiatement après sa création (on sait que cette fonction ne sera pas appelé plus tard)
-/*(function order() {
-  if (page.match("confirmation")) {
-    sessionStorage.clear();
-    localStorage.clear();
-    // valeur du numero de commande
-    let numOrder = new URLSearchParams(document.location.search).get("commande");
-    // merci et mise en page
-    document.querySelector("#orderId").innerHTML = `<br>${numOrder}<br>Merci pour votre achat`;
-    console.log("valeur de l'orderId venant de l'url: " + numOrder);
-    //réinitialisation du numero de commande
-    numOrder = undefined;
-  } else {
-    console.log("sur page cart");
-  }
-})();*/
